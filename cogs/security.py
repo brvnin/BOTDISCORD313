@@ -1,10 +1,9 @@
 import discord
 from discord.ext import commands
-import asyncio
 import os
 
-# --- CONFIGURAÇÃO DE SEGURANÇA ---
-# Lista de termos monitorados (Focada em evitar flags e manter o profissionalismo)
+# --- CONFIGURAÇÃO ---
+# Lista de termos monitorados
 BANNED_WORDS = [
     "virus", "vírus", "malware", "trojan", "rat", "keylogger", "worm", 
     "ransomware", "stealer", "binder", "crypter", "exploit", "rootkit", 
@@ -12,7 +11,9 @@ BANNED_WORDS = [
     "backdoor", "rce", "ddos", "dos attack", "botnet"
 ]
 
-LOG_ID = 1490220486808834118  # Seu canal de logs
+# Puxa os IDs das variáveis de ambiente
+LOG_ID = int(os.getenv('LOG_CHANNEL_ID', 1490220486808834118))
+TICKET_CATEGORY_ID = int(os.getenv('TICKET_CATEGORY_ID', 1490175576491823164))
 
 class SecurityCog(commands.Cog):
     def __init__(self, bot):
@@ -24,25 +25,27 @@ class SecurityCog(commands.Cog):
         if message.author.bot or not message.guild:
             return
 
-        # 2. Ignora se for Admin (opcional, mas recomendado para vocês testarem)
-        # Se quiser que censure até os ADMs, apague as duas linhas abaixo
+        # 2. EXCEÇÃO: Ignora a censura se a mensagem for dentro da categoria de TICKETS
+        if message.channel.category_id == TICKET_CATEGORY_ID:
+            return
+
+        # 3. Ignora se for Administrador (Dono do projeto)
         if message.author.guild_permissions.administrator:
             return
 
-        # 3. Processa o conteúdo da mensagem
+        # 4. Processa o conteúdo da mensagem
         content = message.content.lower()
         
-        # Verifica se alguma palavra banida está na mensagem
         if any(word in content for word in BANNED_WORDS):
             try:
-                # Apaga a mensagem proibida
+                # Apaga a mensagem
                 await message.delete()
 
-                # Aviso rápido no chat (Auto-deleta em 5 segundos para manter o chat clean)
+                # Aviso temporário (5 seg)
                 embed = discord.Embed(
                     title="313 // SECURITY_FILTER",
                     description=f"{message.author.mention}, your message contained restricted terminology and was redacted.",
-                    color=0xFF0000 # Vermelho para alerta
+                    color=0xFF0000 
                 )
                 await message.channel.send(embed=embed, delete_after=5)
 
@@ -53,6 +56,7 @@ class SecurityCog(commands.Cog):
                         title="313 // PROTOCOL_VIOLATION",
                         description=(
                             f"**User:** {message.author.mention} (`{message.author.id}`)\n"
+                            f"**Channel:** {message.channel.mention}\n"
                             f"**Content:** `{message.content}`\n"
                             f"**Action:** Message Redacted"
                         ),
