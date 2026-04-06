@@ -69,7 +69,7 @@ class AdminCog(commands.Cog):
                 "Brutalist UI overhaul. Streamlined support access and navigation.\n\n"
                 "**[+] BUILD FEEDBACK**\n"
                 "Visual 'Generating Binary' indicators for real-time monitoring.\n\n"
-                "*System updated silently. Reload your dashboard to initialize build.*"
+                "*System updated silently. Reload your dashboard to initialize build.* @everyone"
             ),
             color=0x000000 
         )
