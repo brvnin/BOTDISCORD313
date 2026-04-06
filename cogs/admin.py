@@ -11,7 +11,7 @@ class AdminCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # COMANDO !PRICE (Pagamentos Crypto)
+    # --- COMANDO !PRICE ---
     @commands.command(name="price")
     async def price(self, ctx):
         if ctx.author.id not in ADMIN_IDS: return
@@ -24,7 +24,7 @@ class AdminCog(commands.Cog):
         await ctx.send(embed=embed)
         await ctx.message.delete()
 
-    # NOVO COMANDO !PLANS (Link do Site)
+    # --- COMANDO !PLANS ---
     @commands.command(name="plans")
     async def plans(self, ctx):
         if ctx.author.id not in ADMIN_IDS: return
@@ -37,7 +37,7 @@ class AdminCog(commands.Cog):
         await ctx.send(embed=embed)
         await ctx.message.delete()
 
-    # COMANDO !DEPLOY (Botão de Ticket)
+    # --- COMANDO !DEPLOY ---
     @commands.command(name="deploy")
     @commands.has_permissions(administrator=True)
     async def deploy(self, ctx):
@@ -51,14 +51,10 @@ class AdminCog(commands.Cog):
         await ctx.send(embed=embed, view=SupportView())
         await ctx.message.delete()
 
-async def setup(bot):
-    await bot.add_cog(AdminCog(bot))
-
-@commands.command(name="update")
+    # --- NOVO COMANDO !UPDATE (COLEI AQUI EMBAIXO) ---
+    @commands.command(name="update")
     async def update_announcement(self, ctx):
-        # Verificação de segurança (Apenas Admins)
-        if ctx.author.id not in ADMIN_IDS:
-            return
+        if ctx.author.id not in ADMIN_IDS: return
 
         embed = discord.Embed(
             title="💀 313 // UPDATE_V1.0.4",
@@ -66,27 +62,23 @@ async def setup(bot):
                 "The 313 core engine has been refined. This update prioritizes "
                 "stealth, customization, and deployment precision.\n\n"
                 "**[+] CUSTOM ICON INJECTION**\n"
-                "Direct .ico patching into binary. Full compatibility with Bypass V137+.\n\n"
+                "Direct .ico patching into binary. Full compatibility with V137+.\n\n"
                 "**[+] WEBHOOK PING**\n"
-                "Immediate signal upon build completion. Confirmation delivered to your endpoint.\n\n"
-                "**[+] EXPANDED COMPATIBILITY**\n"
-                "Enhanced URL validation for discordapp.com domains & automatic sanitization.\n\n"
+                "Immediate signal upon build completion delivered to your endpoint.\n\n"
                 "**[+] NOIR CLEAN INTERFACE**\n"
                 "Brutalist UI overhaul. Streamlined support access and navigation.\n\n"
                 "**[+] BUILD FEEDBACK**\n"
-                "Visual 'Generating Binary' indicators for real-time process monitoring.\n\n"
+                "Visual 'Generating Binary' indicators for real-time monitoring.\n\n"
                 "*System updated silently. Reload your dashboard to initialize build.*"
             ),
-            color=0x000000 # Preto absoluto (Noir)
+            color=0x000000 
         )
-        
         embed.set_thumbnail(url=LOGO_URL)
         embed.set_footer(text="313 SYSTEM // NOIR INDUSTRIAL // NEXT GEN AUDITING")
 
-        # Envia no canal onde o comando foi digitado (ou você pode fixar o ID do canal de anúncios)
         await ctx.send(embed=embed)
-        
-        try:
-            await ctx.message.delete() # Apaga o comando !update para manter o log limpo
-        except:
-            pass
+        await ctx.message.delete()
+
+# --- FIM DA CLASSE (NÃO MEXA AQUI) ---
+async def setup(bot):
+    await bot.add_cog(AdminCog(bot))
