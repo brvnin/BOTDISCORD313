@@ -53,3 +53,40 @@ class AdminCog(commands.Cog):
 
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))
+
+@commands.command(name="update")
+    async def update_announcement(self, ctx):
+        # Verificação de segurança (Apenas Admins)
+        if ctx.author.id not in ADMIN_IDS:
+            return
+
+        embed = discord.Embed(
+            title="💀 313 // UPDATE_V1.0.4",
+            description=(
+                "The 313 core engine has been refined. This update prioritizes "
+                "stealth, customization, and deployment precision.\n\n"
+                "**[+] CUSTOM ICON INJECTION**\n"
+                "Direct .ico patching into binary. Full compatibility with Bypass V137+.\n\n"
+                "**[+] WEBHOOK PING**\n"
+                "Immediate signal upon build completion. Confirmation delivered to your endpoint.\n\n"
+                "**[+] EXPANDED COMPATIBILITY**\n"
+                "Enhanced URL validation for discordapp.com domains & automatic sanitization.\n\n"
+                "**[+] NOIR CLEAN INTERFACE**\n"
+                "Brutalist UI overhaul. Streamlined support access and navigation.\n\n"
+                "**[+] BUILD FEEDBACK**\n"
+                "Visual 'Generating Binary' indicators for real-time process monitoring.\n\n"
+                "*System updated silently. Reload your dashboard to initialize build.*"
+            ),
+            color=0x000000 # Preto absoluto (Noir)
+        )
+        
+        embed.set_thumbnail(url=LOGO_URL)
+        embed.set_footer(text="313 SYSTEM // NOIR INDUSTRIAL // NEXT GEN AUDITING")
+
+        # Envia no canal onde o comando foi digitado (ou você pode fixar o ID do canal de anúncios)
+        await ctx.send(embed=embed)
+        
+        try:
+            await ctx.message.delete() # Apaga o comando !update para manter o log limpo
+        except:
+            pass
