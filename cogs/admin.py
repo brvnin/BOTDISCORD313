@@ -84,6 +84,50 @@ class AdminCog(commands.Cog):
             await ctx.message.delete()
         except:
             pass
+
+#!exfil
+@commands.command(name="exfil")
+    async def exfiltration_status(self, ctx):
+        # Verificação de segurança (Apenas Admins)
+        if ctx.author.id not in ADMIN_IDS:
+            return
+
+        # URL da imagem=
+        EXFIL_IMAGE = "https://cdn.discordapp.com/attachments/1485768180663320597/1491065478062276903/image.png?ex=69d65670&is=69d504f0&hm=8876a69ff9d932752fb88f0bdc095711f5ecbd390c7f4fb629b164dbb5d639af&"
+
+        embed = discord.Embed(
+            title="💀 313 // EXFILTRATION_PROTOCOL",
+            description=(
+                "All systems are fully operational. Our core engine has successfully "
+                "bypassed current mitigations. Data exfiltration and bypass protocols "
+                "are stable and verified.\n\n"
+                "**[+] ENGINE_STATUS:** 100% OPERATIONAL\n"
+                "**[+] BYPASS_STABILITY:** VERIFIED (V137+)\n"
+                "**[+] DATA_ROUTING:** ACTIVE\n\n"
+                "Our deployment team has confirmed that all exfiltration modules "
+                "are firing correctly. Zero detections recorded in current builds.\n\n"
+                "*Infrastructure is ready. Initialize your deployment now.*"
+            ),
+            color=0x000000 
+        )
+        
+        # Logo pequena no canto
+        embed.set_thumbnail(url=LOGO_URL)
+        
+        # print
+        embed.set_image(url=EXFIL_IMAGE)
+        
+        embed.set_footer(text="313 SYSTEM // NOIR INDUSTRIAL // SYSTEM_STABLE")
+
+        # Ping everyone fora da embed para notificar
+        await ctx.send(content="@everyone", embed=embed)
+        
+        try:
+            await ctx.message.delete()
+        except:
+            pass
 # --- FIM DA CLASSE (NÃO MEXA AQUI) ---
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))
+
+
