@@ -56,29 +56,34 @@ class AdminCog(commands.Cog):
     async def update_announcement(self, ctx):
         if ctx.author.id not in ADMIN_IDS: return
 
+        # Canal de preços mencionado pelo ID
+        prices_channel = "<#1490175213646905554>"
+
         embed = discord.Embed(
-            title="💀 313 // UPDATE_V1.0.4",
+            title="💀 313 // PRICE_ADJUSTMENT",
             description=(
-                "The 313 core engine has been refined. This update prioritizes "
-                "stealth, customization, and deployment precision.\n\n"
-                "**[+] CUSTOM ICON INJECTION**\n"
-                "Direct .ico patching into binary. Full compatibility with V137+.\n\n"
-                "**[+] WEBHOOK PING**\n"
-                "Immediate signal upon build completion delivered to your endpoint.\n\n"
-                "**[+] NOIR CLEAN INTERFACE**\n"
-                "Brutalist UI overhaul. Streamlined support access and navigation.\n\n"
-                "**[+] BUILD FEEDBACK**\n"
-                "Visual 'Generating Binary' indicators for real-time monitoring.\n\n"
-                "*System updated silently. Reload your dashboard to initialize build.* @everyone"
+                "We have re-evaluated our infrastructure costs. Effective immediately, "
+                "the barrier to entry for **313 EXFILTRATOR** has been reduced.\n\n"
+                "**[+] ACQUISITION_COST_REDUCTION**\n"
+                "All license tiers have been adjusted for optimized deployment.\n\n"
+                "**[+] UPDATED_TERMINAL**\n"
+                f"Review the new pricing structure in {prices_channel}.\n\n"
+                "**[+] SYSTEM_EFFICIENCY**\n"
+                "Higher accessibility. Same elite performance.\n\n"
+                "*Infrastructure optimized. Operation efficiency increased.*"
             ),
             color=0x000000 
         )
         embed.set_thumbnail(url=LOGO_URL)
-        embed.set_footer(text="313 SYSTEM // NOIR INDUSTRIAL // NEXT GEN AUDITING")
+        embed.set_footer(text="313 SYSTEM // NOIR INDUSTRIAL // PRICE_UPDATE")
 
-        await ctx.send(embed=embed)
-        await ctx.message.delete()
-
+        # Enviamos o @everyone fora da embed para o ping funcionar
+        await ctx.send(content="@everyone", embed=embed)
+        
+        try:
+            await ctx.message.delete()
+        except:
+            pass
 # --- FIM DA CLASSE (NÃO MEXA AQUI) ---
 async def setup(bot):
     await bot.add_cog(AdminCog(bot))
