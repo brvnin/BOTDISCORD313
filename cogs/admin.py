@@ -59,4 +59,27 @@ class AdminCog(commands.Cog):
         if ctx.author.id not in ADMIN_IDS: return
         embed = discord.Embed(title="💀 313 // EXFILTRATION_PROTOCOL", description="All modules are fully operational. Core engine bypassed current mitigations.\n\nZero detections recorded. Build stability verified.\n\n*Infrastructure is ready. Initialize your deployment now.*", color=0x000000)
         embed.set_thumbnail(url=LOGO_URL)
-        embed.
+        embed.set_image(url=EXFIL_IMAGE)
+        await ctx.send(content="@everyone", embed=embed)
+        await ctx.message.delete()
+
+    @commands.command(name="premium")
+    async def premium_pricing(self, ctx):
+        if ctx.author.id not in ADMIN_IDS: return
+        embed = discord.Embed(title=f"{GHOST_EMOJI} 313 // CLOUD_PREMIUM", description=f"Advanced infrastructure provisioning. Under constant evolution.\n\n**[+] MONTHLY_ACCESS**\n> Price: **$60.00 / Month**\n\n**[+] LIFETIME_PROVISIONING**\n> Price: **$550.00**\n\n**[+] CONTINUOUS_EVOLUTION**\nfrequent agile updates to maintain stability (V137+).\n\n**[!] Initialize at:** {TICKET_REDIRECT}", color=0x000000)
+        embed.set_thumbnail(url=LOGO_URL)
+        await ctx.send(content="@everyone", embed=embed)
+        await ctx.message.delete()
+
+    @commands.command(name="cloud")
+    async def cloud_announcement(self, ctx):
+        if ctx.author.id not in ADMIN_IDS: return
+        embed = discord.Embed(title=f"{GHOST_EMOJI} 313 // CLOUD_PREMIUM_DEPLOYMENT", description=f"Our elite cloud-based infrastructure is now open.\n\n**[+] INFRASTRUCTURE_STATUS:** AVAILABLE\n**[+] ACCESS_LEVEL:** PREMIUM\n\nInitialize session at: {TICKET_REDIRECT}", color=0x000000)
+        embed.set_thumbnail(url=LOGO_URL)
+        embed.set_image(url=CLOUD_IMAGE)
+        embed.set_footer(text="313 SYSTEM // CLOUD_INFRA")
+        await ctx.send(content="@everyone", embed=embed)
+        await ctx.message.delete()
+
+async def setup(bot):
+    await bot.add_cog(AdminCog(bot))
