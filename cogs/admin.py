@@ -23,8 +23,8 @@ class AdminCog(commands.Cog):
     @commands.command(name="price")
     async def price(self, ctx):
         if ctx.author.id not in ADMIN_IDS: return
-        desc = f"Payments are exclusively via **Cryptocurrency**.\n\nInterested? Open a ticket at: {TICKET_REF}"
-        embed = discord.Embed(title="313 // Pricing", description=desc, color=0xFFFFFF)
+        msg = f"Payments are exclusively via **Cryptocurrency**.\n\nInterested? Open a ticket at: {TICKET_REF}"
+        embed = discord.Embed(title="313 // Pricing", description=msg, color=0xFFFFFF)
         embed.set_thumbnail(url=LOGO_URL)
         await ctx.send(embed=embed)
         await ctx.message.delete()
@@ -32,8 +32,8 @@ class AdminCog(commands.Cog):
     @commands.command(name="plans")
     async def plans(self, ctx):
         if ctx.author.id not in ADMIN_IDS: return
-        desc = "Access our official terminal for detailed pricing:\n\n🔗 **[313 // PRICING TERMINAL](https://three13-exfiltrator.onrender.com/#pricing)**"
-        embed = discord.Embed(title="313 // Pricing Models", description=desc, color=0xFFFFFF)
+        msg = "Access our official terminal for detailed pricing:\n\n🔗 **[313 // PRICING TERMINAL](https://three13-exfiltrator.onrender.com/#pricing)**"
+        embed = discord.Embed(title="313 // Pricing Models", description=msg, color=0xFFFFFF)
         embed.set_thumbnail(url=LOGO_URL)
         await ctx.send(embed=embed)
         await ctx.message.delete()
@@ -50,12 +50,14 @@ class AdminCog(commands.Cog):
     @commands.command(name="update")
     async def update(self, ctx):
         if ctx.author.id not in ADMIN_IDS: return
-        desc = (
-            "Effective immediately, acquisition costs have been re-evaluated.\n\n"
-            "**[+] COST_REDUCTION**\nAll license tiers adjusted.\n\n"
-            f"**[+] UPDATED_TERMINAL**\nReview the new structure in {PRICE_CH}."
-        )
-        embed = discord.Embed(title="💀 313 // PRICE_ADJUSTMENT", description=desc, color=0x000000)
+        msg = f"""Effective immediately, acquisition costs have been re-evaluated.
+
+**[+] COST_REDUCTION**
+All license tiers adjusted for optimized deployment.
+
+**[+] UPDATED_TERMINAL**
+Review the new structure in {PRICE_CH}."""
+        embed = discord.Embed(title="💀 313 // PRICE_ADJUSTMENT", description=msg, color=0x000000)
         embed.set_thumbnail(url=LOGO_URL)
         await ctx.send(content="@everyone", embed=embed)
         await ctx.message.delete()
@@ -63,12 +65,12 @@ class AdminCog(commands.Cog):
     @commands.command(name="exfil")
     async def exfil(self, ctx):
         if ctx.author.id not in ADMIN_IDS: return
-        desc = (
-            "All modules are fully operational. Core engine stable.\n\n"
-            "Zero detections recorded. Build stability verified.\n\n"
-            "*Infrastructure is ready. Initialize your deployment now.*"
-        )
-        embed = discord.Embed(title="💀 313 // EXFILTRATION_PROTOCOL", description=desc, color=0x000000)
+        msg = f"""All modules are fully operational. Core engine stable.
+
+Zero detections recorded. Build stability verified.
+
+*Infrastructure is ready. Initialize your deployment now.*"""
+        embed = discord.Embed(title="💀 313 // EXFILTRATION_PROTOCOL", description=msg, color=0x000000)
         embed.set_thumbnail(url=LOGO_URL)
         embed.set_image(url=EXFIL_IMG)
         await ctx.send(content="@everyone", embed=embed)
@@ -77,13 +79,16 @@ class AdminCog(commands.Cog):
     @commands.command(name="premium")
     async def premium(self, ctx):
         if ctx.author.id not in ADMIN_IDS: return
-        desc = (
-            "Advanced infrastructure provisioning. Under constant evolution.\n\n"
-            "**[+] MONTHLY_ACCESS**\n> Price: **$60.00 / Month**\n\n"
-            "**[+] LIFETIME_PROVISIONING**\n> Price: **$550.00**\n\n"
-            f"**[!] Initialize at:** {TICKET_REF}"
-        )
-        embed = discord.Embed(title=f"{GHOST} 313 // CLOUD_PREMIUM", description=desc, color=0x000000)
+        msg = f"""Advanced infrastructure provisioning. Under constant evolution.
+
+**[+] MONTHLY_ACCESS**
+> Price: **$60.00 / Month**
+
+**[+] LIFETIME_PROVISIONING**
+> Price: **$550.00**
+
+**[!] Initialize at:** {TICKET_REF}"""
+        embed = discord.Embed(title=f"{GHOST} 313 // CLOUD_PREMIUM", description=msg, color=0x000000)
         embed.set_thumbnail(url=LOGO_URL)
         await ctx.send(content="@everyone", embed=embed)
         await ctx.message.delete()
@@ -91,11 +96,17 @@ class AdminCog(commands.Cog):
     @commands.command(name="cloud")
     async def cloud(self, ctx):
         if ctx.author.id not in ADMIN_IDS: return
-        desc = (
-            "Our elite cloud-based infrastructure is now open.\n\n"
-            "**[+] INFRASTRUCTURE_STATUS:** AVAILABLE\n"
-            "**[+] ACCESS_LEVEL:** PREMIUM\n\n"
-            f"Initialize session at: {TICKET_REF}"
-        )
-        embed = discord.Embed(title=f"{GHOST} 313 // CLOUD_DEPLOYMENT", description=desc, color=0x000000)
-        embed.set_thumbnail(url=LOGO
+        msg = f"""Our elite cloud-based infrastructure is now open.
+
+**[+] INFRASTRUCTURE_STATUS:** AVAILABLE
+**[+] ACCESS_LEVEL:** PREMIUM
+
+Initialize session at: {TICKET_REF}"""
+        embed = discord.Embed(title=f"{GHOST} 313 // CLOUD_DEPLOYMENT", description=msg, color=0x000000)
+        embed.set_thumbnail(url=LOGO_URL)
+        embed.set_image(url=CLOUD_IMG)
+        await ctx.send(content="@everyone", embed=embed)
+        await ctx.message.delete()
+
+async def setup(bot):
+    await bot.add_cog(AdminCog(bot))
