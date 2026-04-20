@@ -7,7 +7,6 @@ ADMIN_IDS_RAW = os.getenv('ADMIN_IDS', '1490172068573216831,1490209943826075770,
 ADMIN_IDS = [int(i.strip()) for i in ADMIN_IDS_RAW.split(',')]
 LOGO_URL = "https://cdn.discordapp.com/emojis/1490216288524566608.webp?size=96"
 
-# Canais Oficiais
 PANEL_REF = "<#1490177743990685908>"
 TICKET_REF = "<#1490175695089959053>"
 
@@ -17,7 +16,8 @@ class AnnounceCog(commands.Cog):
 
     @commands.command(name="global_news")
     async def global_news(self, ctx):
-        if ctx.author.id not in ADMIN_IDS: return
+        if ctx.author.id not in ADMIN_IDS:
+            return
         
         msg = f"""**[  🇺🇸  ]**
 The most respected auditing tool has been refined. 
@@ -57,10 +57,15 @@ Desenvolvida com um **Motor C++ de Alta Performance** e **Framework Python Ágil
             color=0x000000
         )
         embed.set_thumbnail(url=LOGO_URL)
-        embed.set_footer(text="313 SYSTEM // C++ ENGINE // PYTHON FRAMEWORK // NOIR")
+        embed.set_footer(text="313 SYSTEM // C++ ENGINE // PYTHON FRAMEWORK")
         
         await ctx.send(content="@everyone", embed=embed)
-        await ctx.message.delete()
+        
+        try:
+            await ctx.message.delete()
+        except:
+            pass
 
+# ESTA PARTE É A MAIS IMPORTANTE: NÃO PODE TER ESPAÇOS NO COMEÇO DA LINHA
 async def setup(bot):
     await bot.add_cog(AnnounceCog(bot))
