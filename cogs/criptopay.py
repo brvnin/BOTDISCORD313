@@ -5,7 +5,7 @@ import os
 
 # --- CONFIGURAÇÃO ---
 # Pegue o token no @CryptoBot > Crypto Pay > My Apps
-CRYPTO_TOKEN = os.getenv('CRYPTO_PAY_TOKEN')
+CRYPTO_TOKEN = os.getenv('573079:AAoKFXmc3kJKeT5zFpZzTdyfbwES2K9STvg')
 LOGO_URL = "https://cdn.discordapp.com/emojis/1490216288524566608.webp?size=96"
 
 class CryptoPayCog(commands.Cog):
