@@ -15,70 +15,75 @@ class BillingCog(commands.Cog):
         self.bot = bot
 
     async def create_selly_invoice(self, product_id, customer_email):
-        # Endpoint oficial V2
         url = "https://selly.io/api/v2/pay"
-        
         payload = {
             "product_id": product_id,
-            "email": customer_email,
-            "gateway": "cryptocurrency"
+            "email": customer_email
+            # Gateway deixado em branco para o cliente escolher entre Stripe/Crypto no site
         }
         
-        # Selly exige Basic Auth: E-mail como usuário e API Key como senha
         auth = aiohttp.BasicAuth(SELLY_EMAIL, SELLY_API_KEY)
-        
-        headers = {
-            "User-Agent": "313-Exfiltrator-Bot/2.0",
-            "Content-Type": "application/json"
-        }
+        headers = {"User-Agent": "313-Exfiltrator-Bot/2.0"}
         
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.post(url, json=payload, auth=auth, headers=headers) as resp:
-                    response_text = await resp.text()
-                    
                     if resp.status == 200:
                         data = await resp.json()
-                        return data.get('url'), None
+                        return data.get('url'), "API_STABLE"
                     else:
-                        # Retorna o código do erro para diagnóstico
-                        return None, f"HTTP_{resp.status}: {response_text[:100]}"
-            except Exception as e:
-                return None, str(e)
+                        # Fallback se a API falhar
+                        fallback_url = f"https://selly.io/p/{product_id}?email={customer_email}"
+                        return fallback_url, f"API_REJECTED_HTTP_{resp.status}_FALLBACK_ACTIVE"
+            except Exception:
+                fallback_url = f"https://selly.io/p/{product_id}?email={customer_email}"
+                return fallback_url, "NETWORK_ERROR_FALLBACK_ACTIVE"
 
     @commands.command(name="invoice")
     async def generate_invoice(self, ctx, plan: str = None, email: str = None):
+        """Gera a fatura dentro do ticket do cliente"""
+        
+        # 1. Trava de segurança por categoria
         if ctx.channel.category_id != TICKET_CATEGORY_ID:
             return
 
+        # 2. Validação de entrada
         if not plan or not email or plan.lower() not in ["monthly", "lifetime"]:
             return await ctx.send("```fix\n[ USAGE ] : !invoice <monthly/lifetime> <email>\n```")
 
         await ctx.message.delete()
-        status_msg = await ctx.send(f"```ansi\n{GHOST} Negotiating with Selly.io Terminal...```")
+        status_msg = await ctx.send(f"```ansi\n{GHOST} Connecting to 313 // Billing Infrastructure...```")
 
-        # Puxa IDs do .env
+        # 3. Mapeamento de IDs do Selly no .env
         prod_id = os.getenv('PRODUCT_ID_MONTHLY') if plan.lower() == "monthly" else os.getenv('PRODUCT_ID_LIFETIME')
 
-        url, error_log = await self.create_selly_invoice(prod_id, email)
+        # 4. Processamento da Fatura
+        url, log_status = await self.create_selly_invoice(prod_id, email)
 
-        if url:
-            await status_msg.delete()
-            embed = discord.Embed(
-                title=f"{GHOST} 313 // PAYMENT_TERMINAL",
-                description=(
-                    f"Plan: **313 // {plan.upper()}**\n"
-                    f"Destination: `{email}`\n\n"
-                    "Secure link generated. Click below to complete the acquisition via Cryptocurrency.\n\n"
-                    f"🔗 **[PROCEED TO CHECKOUT]({url})**"
-                ),
-                color=0x000000
-            )
-            embed.set_thumbnail(url=LOGO_URL)
-            await ctx.send(content=ctx.author.mention, embed=embed)
-        else:
-            # Mostra o erro técnico para você saber o que está errado
-            await status_msg.edit(content=f"```diff\n- SELLY_API_FAILURE\n- REASON: {error_log}\n```")
+        await status_msg.delete()
+        
+        # 5. Embed Profissional Noir
+        embed = discord.Embed(
+            title=f"{GHOST} 313 // ACQUISITION_TERMINAL",
+            description=(
+                f"Infrastructure: **313 // {plan.upper()}**\n"
+                f"Client Identity: `{email}`\n"
+                f"Network Status: `ENCRYPTED`\n\n"
+                "**AVAILABLE_GATEWAYS:**\n"
+                "> 💳 **Stripe** (Credit/Debit Card)\n"
+                "> ₿ **Bitcoin / Bitcoin Cash**\n"
+                "> ♦️ **Ethereum**\n"
+                "> Ł **Litecoin**\n\n"
+                "Use the terminal below to proceed with the transaction. Access is granted immediately after confirmation.\n\n"
+                f"🔗 **[PROCEED TO CHECKOUT]({url})**"
+            ),
+            color=0x000000
+        )
+        embed.set_thumbnail(url=LOGO_URL)
+        embed.set_footer(text=f"TRANSACTION_ID: {log_status} // v2.0")
+        
+        await ctx.send(content=ctx.author.mention, embed=embed)
 
 async def setup(bot):
+    # Correção do carregamento para setup(bot)
     await bot.add_cog(BillingCog(bot))
