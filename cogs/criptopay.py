@@ -1,67 +1,75 @@
 import discord
 from discord.ext import commands
-import aiohttp
 import os
 
 # --- CONFIGURAÇÃO ---
-# Pegue o token no @CryptoBot > Crypto Pay > My Apps
-CRYPTO_TOKEN = os.getenv('573079:AAoKFXmc3kJKeT5zFpZzTdyfbwES2K9STvg')
+# Endereço da sua carteira (Recomendo USDT - Rede TRC20/Tron)
+MY_WALLET = "573079:AAoKFXmc3kJKeT5zFpZzTdyfbwES2K9STvg"
+LOG_ID = 1490220486808834118 
 LOGO_URL = "https://cdn.discordapp.com/emojis/1490216288524566608.webp?size=96"
 
-class CryptoPayCog(commands.Cog):
+class PaymentModal(discord.ui.Modal, title='313 // VERIFY_TRANSACTION'):
+    txid = discord.ui.TextInput(
+        label='Transaction Hash (TXID)',
+        placeholder='Paste the transaction hash here...',
+        min_length=10,
+        required=True
+    )
+
+    async def on_submit(self, interaction: discord.Interaction):
+        # Envia o log para você verificar
+        log_channel = interaction.guild.get_channel(LOG_ID)
+        if log_channel:
+            embed_log = discord.Embed(
+                title="💀 313 // PAYMENT_PENDING_VERIFICATION",
+                description=f"A user has submitted a payment for verification.",
+                color=0xFFFF00 # Amarelo (Pendente)
+            )
+            embed_log.add_field(name="USER", value=f"{interaction.user.mention} (`{interaction.user.id}`)", inline=True)
+            embed_log.add_field(name="TXID / HASH", value=f"```\n{self.txid.value}\n```", inline=False)
+            await log_channel.send(embed=embed_log)
+
+        await interaction.response.send_message(
+            "```fix\n[ SYSTEM ] : Hash submitted successfully.\n[ STATUS ] : Waiting for manual verification by the deployment team.\n```", 
+            ephemeral=True
+        )
+
+class PaymentView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(label="Confirm Payment", style=discord.ButtonStyle.green, custom_id="313:confirm_pay", emoji="✔️")
+    async def confirm_pay(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_modal(PaymentModal())
+
+class PaymentCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def create_invoice(self, amount):
-        """Cria uma fatura via API do CryptoBot"""
-        url = "https://pay.crypt.bot/api/createInvoice"
-        headers = {"Crypto-Pay-API-Token": CRYPTO_TOKEN}
-        payload = {
-            "asset": "USDT",
-            "amount": str(amount),
-            "description": "313 // PREMIUN_INFRASTRUCTURE_ACCESS",
-            "allow_comments": False
-        }
-
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=payload, headers=headers) as resp:
-                if resp.status == 200:
-                    data = await resp.json()
-                    return data['result']['pay_url']
-                return None
-
     @commands.command(name="buy")
     async def buy(self, ctx, plan: str = None):
-        """Gera o link de pagamento. Uso: !buy monthly | !buy lifetime"""
+        """Uso: !buy monthly | !buy lifetime"""
         if not plan or plan.lower() not in ["monthly", "lifetime"]:
             return await ctx.send("```fix\n[ ERROR ] : Use !buy monthly or !buy lifetime\n```")
 
-        # Define o valor baseado no plano
-        amount = 60 if plan.lower() == "monthly" else 550
+        price = "60.00 USDT" if plan.lower() == "monthly" else "550.00 USDT"
         
-        await ctx.send("```fix\n[ SYSTEM ] : Initializing encrypted payment gateway...\n```")
+        embed = discord.Embed(
+            title="💀 313 // PAYMENT_TERMINAL",
+            description=(
+                f"You are acquiring **{plan.upper()}** access.\n\n"
+                f"**AMOUNT:** `{price}`\n"
+                f"**NETWORK:** `TRC20 (Tron)`\n"
+                f"**ADDRESS:** `{MY_WALLET}`\n\n"
+                "*Transfer the exact amount to the address above. After sending, click the button below to submit your transaction hash for verification.*"
+            ),
+            color=0x000000
+        )
+        embed.set_thumbnail(url=LOGO_URL)
+        embed.set_footer(text="313 SYSTEM // ENCRYPTED_PAYMENT_v2")
 
-        # Chama a API
-        pay_url = await self.create_invoice(amount)
-
-        if pay_url:
-            embed = discord.Embed(
-                title="💀 313 // SECURE_INVOICE",
-                description=(
-                    f"A private payment terminal for **{plan.upper()}** has been generated.\n\n"
-                    f"🔗 **[PROCEED TO TERMINAL]({pay_url})**\n\n"
-                    "*Transaction is verified instantly via Telegram CryptoBot.*"
-                ),
-                color=0x000000
-            )
-            embed.set_thumbnail(url=LOGO_URL)
-            embed.set_footer(text="313 SYSTEM // CRYPTO_PAY_PROTOCOL")
-            
-            # Envia o link no privado para segurança do cliente
-            await ctx.author.send(embed=embed)
-            await ctx.send(f"✅ {ctx.author.mention}, invoice delivered to your DMs.")
-        else:
-            await ctx.send("❌ `API_ERROR`: Could not establish connection with CryptoBot.")
+        await ctx.author.send(embed=embed, view=PaymentView())
+        await ctx.send(f"✅ {ctx.author.mention}, the payment instructions were sent to your DMs.")
 
 async def setup(bot):
-    await bot.add_cog(CryptoPayCog(bot))
+    await bot.add_cog(PaymentCog(bot))
