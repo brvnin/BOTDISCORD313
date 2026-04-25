@@ -4,7 +4,7 @@ import os
 
 # --- CONFIGURAÇÃO ---
 ADMIN_IDS = [int(i.strip()) for i in os.getenv('ADMIN_IDS', '1490172068573216831,1490209943826075770,1488612428689182882').split(',')]
-MY_WALLET = "SEU_ENDERECO_DE_CARTEIRA_AQUI" # Substitua pela sua carteira
+MY_WALLET = "573079:AAoKFXmc3kJKeT5zFpZzTdyfbwES2K9STvg" # Substitua pela sua carteira
 LOG_ID = 1490220486808834118 
 LOGO_URL = "https://cdn.discordapp.com/emojis/1490216288524566608.webp?size=96"
 STAFF_ID = 1490209943826075770
