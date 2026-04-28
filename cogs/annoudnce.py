@@ -3,6 +3,7 @@ from discord.ext import commands
 import os
 
 # --- CONFIGURAÇÃO DE ACESSO ---
+# Puxa os IDs do seu .env (Garante que você e seus sócios tenham acesso)
 ADMIN_IDS_RAW = os.getenv('ADMIN_IDS', '1490172068573216831,1490209943826075770,1488612428689182882')
 ADMIN_IDS = [int(i.strip()) for i in ADMIN_IDS_RAW.split(',')]
 
@@ -18,13 +19,12 @@ class AnnounceCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # --- COMANDO 1: ATUALIZAÇÃO GLOBAL V2 (HÍBRIDO C++/PYTHON) ---
     @commands.command(name="global_news")
     async def global_news(self, ctx):
-        # Verificação de segurança por ID
         if ctx.author.id not in ADMIN_IDS:
             return
 
-        # Texto unificado Bilíngue (Estética Noir)
         msg_content = f"""
 **[  🇺🇸  ENGLISH_TERMINAL ]**
 The most respected auditing tool has been refined. 
@@ -35,7 +35,6 @@ Engineered with a **High-Performance C++ Core** and an **Agile Python Framework*
 > **Session Cloning:** Instant access to Telegram, Discord, Steam (Bypass Guard), and more.
 > **Zero CMD Stealth:** Operates entirely in the shadows with no visual trace.
 > **Anti-Analysis:** 8 layers of protection + Human movement detection.
-> **Shielded Code:** Advanced obfuscation to remain a mystery to analysts.
 
 **⚠️ CHROME_STATUS:** 90% Success rate. Daily C++ engine patches to maintain stability.
 *"If it passed through hardware, it now belongs to you."*
@@ -51,7 +50,6 @@ Desenvolvida com um **Motor C++ de Alta Performance** e **Framework Python Ágil
 > **Clonagem de Sessão:** Acesso instantâneo a Telegram, Discord, Steam e outros.
 > **Silêncio Absoluto:** Operação total nas sombras, sem janelas ou rastros visuais.
 > **Anti-Análise:** 8 camadas de proteção + Detecção de movimento humano.
-> **Código Blindado:** Ofuscação avançada, tornando o arquivo um mistério.
 
 **⚠️ STATUS_CHROME:** 90% de sucesso. Manutenção diária no motor C++ para estabilidade.
 
@@ -66,16 +64,55 @@ Desenvolvida com um **Motor C++ de Alta Performance** e **Framework Python Ágil
         embed.set_thumbnail(url=LOGO_URL)
         embed.set_footer(text="313 SYSTEM // C++ ENGINE // PYTHON FRAMEWORK")
 
-        # Envia a mensagem com @everyone
         await ctx.send(content="@everyone", embed=embed)
-        
-        # Apaga o comando original para manter o canal limpo
-        try:
-            await ctx.message.delete()
-        except:
-            pass
+        try: await ctx.message.delete()
+        except: pass
 
-# --- FUNÇÃO DE INICIALIZAÇÃO (setup) ---
-# ESTA PARTE DEVE FICAR FORA DA CLASSE E SEM ESPAÇOS NO INÍCIO
+    # --- COMANDO 2: PROTOCOLO DE LIQUIDAÇÃO (VENDA DO PROJETO TRILÍNGUE) ---
+    @commands.command(name="liquidation")
+    async def project_sale(self, ctx):
+        if ctx.author.id not in ADMIN_IDS:
+            return
+
+        msg_content = f"""
+**[  🇺🇸  FULL PROJECT ACQUISITION ]**
+The complete **313 EXFILTRATOR** infrastructure is available for acquisition. A turnkey operation with verified revenue and high-frequency traffic.
+
+**📊 STATS:** +50 Logs every 12h cycle.
+**📦 INCLUDES:** C++ Source (Engine + Key System), Web UI Source, Auto-2FA Modules, Active DB, and this configured Discord Bot.
+
+---
+
+**[  🇧🇷  AQUISIÇÃO TOTAL DO PROJETO ]**
+Toda a infraestrutura do **313 EXFILTRATOR** está à venda. Operação completa e lucrativa, pronta para uso imediato.
+
+**📊 STATS:** +50 Logs a cada ciclo de 12h.
+**📦 INCLUI:** Source C++ (Motor + Sistema de Keys), Source Web UI, Módulos Auto-2FA, Database Ativa e este Bot de Discord.
+
+---
+
+**[  🇷🇺  ПОЛНАЯ ПРОДАЖА ПРОЕКТА ]**
+Вся инфраструктура **313 EXFILTRATOR** доступна для покупки. Готовый бизнес с проверенным трафиком и стабильным доходом.
+
+**📊 ПОКАЗАТЕЛИ:** +50 логов каждые 12 часов.
+**📦 В КОМПЛЕКТЕ:** Исходный код C++ (Движок + Система ключей), Исходный код Web UI, Модули Auto-2FA, Активная БД и этот Discord бот.
+
+**📩 NEGOTIATION:** Open a ticket at {TICKET_REF}. Serious inquiries only.
+"""
+
+        embed = discord.Embed(
+            title=f"{GHOST} 313 // PROJECT_LIQUIDATION_PROTOCOL",
+            description=msg_content,
+            color=0x000000
+        )
+        embed.set_thumbnail(url=LOGO_URL)
+        embed.set_footer(text="313 SYSTEM // INTERNATIONAL_ASSET_TRANSFER")
+
+        await ctx.send(content="@everyone", embed=embed)
+        try: await ctx.message.delete()
+        except: pass
+
+# --- INICIALIZAÇÃO DA COG ---
+# Esta função setup deve estar fora da classe e sem espaços no início
 async def setup(bot):
     await bot.add_cog(AnnounceCog(bot))
